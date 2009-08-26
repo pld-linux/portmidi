@@ -38,7 +38,7 @@ Pliki nagłówkowe biblioteki PortMidi.
 %patch0 -p1
 
 %build
-%{__make} -f pm_linux/Makefile \
+%{__make} -j1 -f pm_linux/Makefile \
 	CC="%{__cc}" \
 	OPTFLAGS="%{rpmcflags}" \
 	PMFLAGS="-DNEWBUFFER%{?debug: -DPM_CHECK_ERRORS}" \
