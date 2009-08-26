@@ -1,14 +1,14 @@
 Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
-Version:	20070117
+Version:	131
 Release:	1
 License:	MIT-like
 Group:		Libraries
-Source0:	http://www.cs.cmu.edu/~music/portmusic/portmidi/portmidi17Jan07.zip
-# Source0-md5:	2b21759b2ce05fde9d50842252ce6418
+Source0:	http://dl.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
+# Source0-md5:	1715bb3d9f63c6b259720709ef43b534
 Patch0:		%{name}-make.patch
-URL:		http://www.cs.cmu.edu/~music/portmusic/portmidi/
+URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	libtool
 BuildRequires:	unzip
@@ -32,18 +32,6 @@ Header files for PortMidi library.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki PortMidi.
-
-%package static
-Summary:	Static PortMidi library
-Summary(pl.UTF-8):	Statyczna biblioteka PortMidi
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static PortMidi library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka PortMidi.
 
 %prep
 %setup -q -n %{name}
@@ -74,6 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc CHANGELOG.txt README.txt license.txt pm_linux/README_LINUX.txt
 %attr(755,root,root) %{_libdir}/libportmidi.so.*.*.*
 %attr(755,root,root) %{_libdir}/libporttime.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libportmidi.so.0
+%attr(755,root,root) %ghost %{_libdir}/libporttime.so.0
 
 %files devel
 %defattr(644,root,root,755)
@@ -84,8 +74,3 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/pmutil.h
 %{_includedir}/portmidi.h
 %{_includedir}/porttime.h
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libportmidi.a
-%{_libdir}/libporttime.a
