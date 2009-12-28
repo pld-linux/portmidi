@@ -1,13 +1,17 @@
+#
+# TODO: try to build with java enabled
+#
 Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
-Version:	131
+Version:	199
 Release:	1
 License:	MIT-like
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
-# Source0-md5:	1715bb3d9f63c6b259720709ef43b534
+Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
+# Source0-md5:	34b85ef552d1129a66642d14e5550709
 Patch0:		%{name}-make.patch
+Patch1:		%{name}-disable_java.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	libtool
@@ -36,6 +40,7 @@ Pliki nagłówkowe biblioteki PortMidi.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__make} -j1 -f pm_linux/Makefile \
