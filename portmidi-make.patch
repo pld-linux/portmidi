@@ -1,7 +1,7 @@
---- portmidi/pm_linux/Makefile.orig	2007-01-14 00:37:41.000000000 +0100
-+++ portmidi/pm_linux/Makefile	2007-06-25 22:25:45.248254814 +0200
-@@ -23,7 +23,7 @@
- # PMFLAGS = -DNEWBUFFER
+--- portmidi/pm_linux/Makefile~	2009-01-20 05:01:54.000000000 +0100
++++ portmidi/pm_linux/Makefile	2009-12-28 14:20:42.647549089 +0100
+@@ -21,7 +21,7 @@
+ # PMFLAGS = 
  
  # Use this for linux alsa (0.9x) version
 -versions = pm_linux/pmlinuxalsa.o
@@ -9,7 +9,7 @@
  ALSALIB = -lasound
  VFLAGS = -DPMALSA
  
-@@ -32,58 +32,72 @@
+@@ -30,16 +30,19 @@
  # ALSALIB = 
  # VFLAGS = -DPMNULL
  
@@ -26,31 +26,36 @@
 +includedir = /usr/include
  
 -pmobjects = pm_common/pmutil.o $(versions) pm_linux/pmlinux.o  \
--	pm_common/portmidi.o
+-	pm_common/portmidi.o pm_linux/finddefault.o
 +pmobjects = pm_common/pmutil.lo $(versions) pm_linux/pmlinux.lo  \
-+	pm_common/portmidi.lo
++	pm_common/portmidi.lo pm_linux/finddefault.lo
  
--ptobjects = porttime/porttime.o porttime/ptlinux.o 
+-ptobjects = porttime/porttime.o porttime/ptlinux.o
 +ptobjects = porttime/porttime.lo porttime/ptlinux.lo
  
  current: all
  
- all: $(pmlib) $(ptlib) pm_test/test pm_test/sysex pm_test/midithread \
- 	pm_test/latency pm_test/midithru pm_test/qtest pm_test/mm
+@@ -47,46 +50,49 @@
+ 	pm_test/latency pm_test/midithru pm_test/qtest pm_test/mm \
+ 	pm_java/pmjni/libpmjni.so pm_java/pmdefaults/pmdefaults.jar 
  
 -$(pmlib): pm_linux/Makefile $(pmobjects)
 -	ar -cr $(pmlib) $(pmobjects)
-+$(pmlib): pm_linux/Makefile $(pmobjects) $(ptlib)
++$(pmlib): pm_linux/Makefile $(pmobjects) $(ptlib) 
 +	libtool --tag=CC --mode=link $(CC) -shared -o $(pmlib) $(pmobjects) -rpath $(libdir) $(ptlib) $(ALSALIB)
  
  $(ptlib): pm_linux/Makefile $(ptobjects)
 -	ar -cr $(ptlib) $(ptobjects)
-+	libtool --tag=CC --mode=link $(CC) -shared -o $(ptlib) $(ptobjects) -rpath $(libdir) -lpthread
++	libtool --tag=CC --mode=link $(CC) -shared -o $(ptlib) $(ptobjects) -rpath $(libdir) -lpthread  
  
 -pm_linux/pmlinuxalsa.o: pm_linux/Makefile pm_linux/pmlinuxalsa.c pm_linux/pmlinuxalsa.h
 -	$(CC) -c pm_linux/pmlinuxalsa.c -o pm_linux/pmlinuxalsa.o
 +pm_linux/pmlinuxalsa.lo: pm_linux/Makefile pm_linux/pmlinuxalsa.c pm_linux/pmlinuxalsa.h
 +	libtool --mode=compile $(CC) $(CFLAGS) -c pm_linux/pmlinuxalsa.c -o pm_linux/pmlinuxalsa.lo
+ 
+ #---------- test programs ------------
+ 
+ 
  
  pm_test/test: pm_linux/Makefile pm_test/test.o $(pmlib) $(ptlib)
 -	$(CC) pm_test/test.o -o pm_test/test $(pmlib) $(ptlib) $(ALSALIB)
@@ -62,23 +67,27 @@
  
  pm_test/midithread: pm_linux/Makefile pm_test/midithread.o $(pmlib) $(ptlib)
 -	$(CC) pm_test/midithread.o -o pm_test/midithread \
+-        $(pmlib) $(ptlib) $(ALSALIB)
 +	libtool --mode=link $(CC) pm_test/midithread.o -o pm_test/midithread \
-         $(pmlib) $(ptlib) $(ALSALIB)
++	$(pmlib) $(ptlib) $(ALSALIB)
  
  pm_test/latency: pm_linux/Makefile $(ptlib) pm_test/latency.o 
 -	$(CC) pm_test/latency.o -o pm_test/latency $(pmlib) $(ptlib) \
+-        $(ALSALIB) -lpthread -lm
 +	libtool --mode=link $(CC) pm_test/latency.o -o pm_test/latency $(pmlib) $(ptlib) \
-         $(ALSALIB) -lpthread -lm
++	$(ALSALIB) -lpthread -lm
  
  pm_test/midithru: pm_linux/Makefile $(ptlib) pm_test/midithru.o 
 -	$(CC) pm_test/midithru.o -o pm_test/midithru $(pmlib) $(ptlib) \
+-        $(ALSALIB) -lpthread -lm
 +	libtool --mode=link $(CC) pm_test/midithru.o -o pm_test/midithru $(pmlib) $(ptlib) \
-         $(ALSALIB) -lpthread -lm
++	$(ALSALIB) -lpthread -lm
  
  pm_test/mm: pm_linux/Makefile $(ptlib) pm_test/mm.o 
 -	$(CC) pm_test/mm.o -o pm_test/mm $(pmlib) $(ptlib) \
+-        $(ALSALIB) -lpthread -lm
 +	libtool --mode=link $(CC) pm_test/mm.o -o pm_test/mm $(pmlib) $(ptlib) \
-         $(ALSALIB) -lpthread -lm
++	$(ALSALIB) -lpthread -lm
  
 -porttime/ptlinux.o: pm_linux/Makefile porttime/ptlinux.c
 -	$(CC) -c porttime/ptlinux.c -o porttime/ptlinux.o
@@ -91,8 +100,13 @@
 +
 +%.lo: %.c
 +	libtool --mode=compile $(CC) $(CFLAGS) -c $< -o $@
-+
-+install: $(ptlib) $(pmlib)
+ 
+ #------------ Java stuff here --------------
+ 
+@@ -151,6 +157,12 @@
+ 	cp pm_java/pmdefaults.jar /usr/share/java
+ 	# do not chmod +x here since we are probably root
+ 	cp pm_java/pmdefaults/pmdefaults /usr/local/bin
 +	install -d $(DESTDIR)$(libdir) $(DESTDIR)$(includedir)
 +	libtool --mode=install install $(ptlib) $(DESTDIR)$(libdir)
 +	libtool --mode=install install $(pmlib) $(DESTDIR)$(libdir)
