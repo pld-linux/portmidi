@@ -4,12 +4,12 @@
 Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
-Version:	199
+Version:	200
 Release:	1
 License:	MIT-like
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
-# Source0-md5:	34b85ef552d1129a66642d14e5550709
+# Source0-md5:	26053a105d938395227bb6ae1d78643b
 Patch0:		%{name}-make.patch
 Patch1:		%{name}-disable_java.patch
 URL:		http://portmedia.sourceforge.net/
