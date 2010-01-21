@@ -1,5 +1,5 @@
---- portmidi/pm_linux/Makefile~	2009-01-20 05:01:54.000000000 +0100
-+++ portmidi/pm_linux/Makefile	2009-12-28 14:20:42.647549089 +0100
+--- portmidi/pm_linux/Makefile~	2009-01-20 04:01:54.000000000 +0000
++++ portmidi/pm_linux/Makefile	2010-01-21 18:33:13.000000000 +0000
 @@ -21,7 +21,7 @@
  # PMFLAGS = 
  
@@ -41,12 +41,12 @@
  
 -$(pmlib): pm_linux/Makefile $(pmobjects)
 -	ar -cr $(pmlib) $(pmobjects)
-+$(pmlib): pm_linux/Makefile $(pmobjects) $(ptlib) 
++$(pmlib): pm_linux/Makefile $(pmobjects) $(ptlib)
 +	libtool --tag=CC --mode=link $(CC) -shared -o $(pmlib) $(pmobjects) -rpath $(libdir) $(ptlib) $(ALSALIB)
  
  $(ptlib): pm_linux/Makefile $(ptobjects)
 -	ar -cr $(ptlib) $(ptobjects)
-+	libtool --tag=CC --mode=link $(CC) -shared -o $(ptlib) $(ptobjects) -rpath $(libdir) -lpthread  
++	libtool --tag=CC --mode=link $(CC) -shared -o $(ptlib) $(ptobjects) -rpath $(libdir) -lpthread
  
 -pm_linux/pmlinuxalsa.o: pm_linux/Makefile pm_linux/pmlinuxalsa.c pm_linux/pmlinuxalsa.h
 -	$(CC) -c pm_linux/pmlinuxalsa.c -o pm_linux/pmlinuxalsa.o
@@ -67,27 +67,23 @@
  
  pm_test/midithread: pm_linux/Makefile pm_test/midithread.o $(pmlib) $(ptlib)
 -	$(CC) pm_test/midithread.o -o pm_test/midithread \
--        $(pmlib) $(ptlib) $(ALSALIB)
 +	libtool --mode=link $(CC) pm_test/midithread.o -o pm_test/midithread \
-+	$(pmlib) $(ptlib) $(ALSALIB)
+         $(pmlib) $(ptlib) $(ALSALIB)
  
  pm_test/latency: pm_linux/Makefile $(ptlib) pm_test/latency.o 
 -	$(CC) pm_test/latency.o -o pm_test/latency $(pmlib) $(ptlib) \
--        $(ALSALIB) -lpthread -lm
 +	libtool --mode=link $(CC) pm_test/latency.o -o pm_test/latency $(pmlib) $(ptlib) \
-+	$(ALSALIB) -lpthread -lm
+         $(ALSALIB) -lpthread -lm
  
  pm_test/midithru: pm_linux/Makefile $(ptlib) pm_test/midithru.o 
 -	$(CC) pm_test/midithru.o -o pm_test/midithru $(pmlib) $(ptlib) \
--        $(ALSALIB) -lpthread -lm
 +	libtool --mode=link $(CC) pm_test/midithru.o -o pm_test/midithru $(pmlib) $(ptlib) \
-+	$(ALSALIB) -lpthread -lm
+         $(ALSALIB) -lpthread -lm
  
  pm_test/mm: pm_linux/Makefile $(ptlib) pm_test/mm.o 
 -	$(CC) pm_test/mm.o -o pm_test/mm $(pmlib) $(ptlib) \
--        $(ALSALIB) -lpthread -lm
 +	libtool --mode=link $(CC) pm_test/mm.o -o pm_test/mm $(pmlib) $(ptlib) \
-+	$(ALSALIB) -lpthread -lm
+         $(ALSALIB) -lpthread -lm
  
 -porttime/ptlinux.o: pm_linux/Makefile porttime/ptlinux.c
 -	$(CC) -c porttime/ptlinux.c -o porttime/ptlinux.o
