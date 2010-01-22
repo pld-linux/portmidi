@@ -14,6 +14,7 @@ Patch0:		%{name}-make.patch
 Patch1:		%{name}-disable_java.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
+BuildRequires:	dos2unix
 BuildRequires:	libtool
 BuildRequires:	unzip
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -39,6 +40,9 @@ Pliki nagłówkowe biblioteki PortMidi.
 
 %prep
 %setup -q -n %{name}
+
+dos2unix pm_linux/Makefile
+
 %patch0 -p1
 %patch1 -p1
 
