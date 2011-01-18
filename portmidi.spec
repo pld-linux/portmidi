@@ -11,6 +11,7 @@ Patch0:		%{name}-cmake.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	cmake
+BuildRequires:	jdk >= 1.5
 BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	unzip
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
