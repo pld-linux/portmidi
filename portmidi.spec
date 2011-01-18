@@ -1,21 +1,17 @@
-#
-# TODO: try to build with java enabled
-#
 Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
-Version:	200
-Release:	1
+Version:	217
+Release:	0.1
 License:	MIT-like
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
-# Source0-md5:	26053a105d938395227bb6ae1d78643b
-Patch0:		%{name}-make.patch
-Patch1:		%{name}-disable_java.patch
+# Source0-md5:	03f46fd3947e2ef4c8c465baaf832241
+Patch0:		%{name}-cmake.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
-BuildRequires:	dos2unix
-BuildRequires:	libtool
+BuildRequires:	cmake
+BuildRequires:	rpmbuild(macros) >= 1.600
 BuildRequires:	unzip
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -40,25 +36,20 @@ Pliki nagłówkowe biblioteki PortMidi.
 
 %prep
 %setup -q -n %{name}
-
-dos2unix pm_linux/Makefile
-
 %patch0 -p1
-%patch1 -p1
 
 %build
-%{__make} -j1 -f pm_linux/Makefile \
-	CC="%{__cc}" \
-	OPTFLAGS="%{rpmcflags}" \
-	PMFLAGS="-DNEWBUFFER%{?debug: -DPM_CHECK_ERRORS}" \
-	libdir=%{_libdir}
+export JAVA_HOME=%{java_home}
+%cmake \
+	-DCMAKE_CACHEFILE_DIR=%{_builddir}/%{name}/build
+
+%{__make} -j 1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} -f pm_linux/Makefile install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	libdir=%{_libdir}
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -69,17 +60,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc CHANGELOG.txt README.txt license.txt pm_linux/README_LINUX.txt
-%attr(755,root,root) %{_libdir}/libportmidi.so.*.*.*
-%attr(755,root,root) %{_libdir}/libporttime.so.*.*.*
+%attr(755,root,root) %{_bindir}/pmdefaults
 %attr(755,root,root) %ghost %{_libdir}/libportmidi.so.0
-%attr(755,root,root) %ghost %{_libdir}/libporttime.so.0
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libpmjni.so
 %attr(755,root,root) %{_libdir}/libportmidi.so
-%attr(755,root,root) %{_libdir}/libporttime.so
-%{_libdir}/libportmidi.la
-%{_libdir}/libporttime.la
-%{_includedir}/pmutil.h
+%attr(755,root,root) %{_libdir}/libportmidi_s.so
 %{_includedir}/portmidi.h
 %{_includedir}/porttime.h
