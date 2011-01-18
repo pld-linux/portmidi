@@ -5,17 +5,20 @@ Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
 Version:	217
-Release:	1
+Release:	2
 License:	MIT-like
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
 # Source0-md5:	03f46fd3947e2ef4c8c465baaf832241
+Source1:	pmdefaults.desktop
 Patch0:		%{name}-cmake.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	cmake
+BuildRequires:	desktop-file-utils
 #BuildRequires:	doxygen
 BuildRequires:	jdk >= 1.5
+BuildRequires:	jpackage-utils
 BuildRequires:	rpmbuild(macros) >= 1.600
 #BuildRequires:	texlive-format-pdflatex
 #BuildRequires:	texlive-latex-extend
@@ -77,19 +80,26 @@ cd latex
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT{%{_libdir}/%{name},%{_datadir}/icons/hicolor/128x128/apps,%{_desktopdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # Install the test applications
-install -d $RPM_BUILD_ROOT%{_libdir}/%{name}
 for app in latency midiclock midithread midithru mm qtest sysex test; do
-	install build/Release/$app $RPM_BUILD_ROOT%{_libdir}/%{name}/
+	install build/Release/$app $RPM_BUILD_ROOT%{_libdir}/%{name}
 done
 
 # PLD's jni library location is different
-mv $RPM_BUILD_ROOT%{_libdir}/libpmjni.so $RPM_BUILD_ROOT%{_libdir}/%{name}/
-mv $RPM_BUILD_ROOT%{_javadir}/pmdefaults.jar $RPM_BUILD_ROOT%{_libdir}/%{name}/
+mv $RPM_BUILD_ROOT%{_libdir}/libpmjni.so $RPM_BUILD_ROOT%{_libdir}/%{name}
+mv $RPM_BUILD_ROOT%{_javadir}/pmdefaults.jar $RPM_BUILD_ROOT%{_libdir}/%{name}
+
+# pmdefaults icon
+cp -a pm_java/pmdefaults/pmdefaults-icon.png \
+   $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
+
+# desktop file
+desktop-file-install --dir=$RPM_BUILD_ROOT%{_desktopdir} %{SOURCE1}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -125,3 +135,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/portmidi/qtest
 %attr(755,root,root) %{_libdir}/portmidi/sysex
 %attr(755,root,root) %{_libdir}/portmidi/test
+%{_desktopdir}/pmdefaults.desktop
+%{_iconsdir}/hicolor/128x128/apps/pmdefaults-icon.png
