@@ -1,3 +1,6 @@
+#
+# TODO: fix build doxygen documentaton
+#
 Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
@@ -11,8 +14,12 @@ Patch0:		%{name}-cmake.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	cmake
+#BuildRequires:	doxygen
 BuildRequires:	jdk >= 1.5
 BuildRequires:	rpmbuild(macros) >= 1.600
+#BuildRequires:	texlive-format-pdflatex
+#BuildRequires:	texlive-latex-extend
+#BuildRequires:	texlive-xetex
 BuildRequires:	unzip
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -45,6 +52,14 @@ export JAVA_HOME=%{java_home}
 	-DCMAKE_CACHEFILE_DIR=%{_builddir}/%{name}/build
 
 %{__make} -j 1
+
+# TODO: fix "undefined refernce" errors
+%if 0
+# Build the doxygen documentation:
+doxygen
+cd latex
+%{__make}
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
