@@ -20,6 +20,7 @@ BuildRequires:	desktop-file-utils
 BuildRequires:	jdk >= 1.5
 BuildRequires:	jpackage-utils
 BuildRequires:	rpmbuild(macros) >= 1.600
+BuildRequires:	sed >= 4.0
 #BuildRequires:	texlive-format-pdflatex
 #BuildRequires:	texlive-latex-extend
 #BuildRequires:	texlive-xetex
@@ -62,6 +63,12 @@ Narzędzia do konfiguracji i używania portmidi.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
+
+# Add shebang, lib and class path
+%{__sed} -i -e 's|^java|#!/bin/sh\njava \\\
+	-Djava.library.path=%{_libdir}/%{name}/|' \
+	-e 's|/usr/share/java/|%{_libdir}/%{name}/|' \
+	pm_java/pmdefaults/pmdefaults
 
 %build
 export JAVA_HOME=%{java_home}
