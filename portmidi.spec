@@ -47,7 +47,7 @@ Summary:	Tools to configure and use portmidi
 Summary(pl.UTF-8):	Narzędzia do konfiguracji i używania portmidi
 Group:		Applications/Multimedia
 Requires:	%{name} = %{version}-%{release}
-Requires:	java >= 1.5
+Requires:	jdk >= 1.5
 Requires:	jpackage-utils
 
 %description tools
@@ -114,6 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc pm_java/pmdefaults/README.txt pm_cl/*
 %attr(755,root,root) %{_bindir}/pmdefaults
+%dir %{_libdir}/portmidi
 %attr(755,root,root) %{_libdir}/portmidi/latency
 %attr(755,root,root) %{_libdir}/portmidi/libpmjni.so
 %attr(755,root,root) %{_libdir}/portmidi/midiclock
