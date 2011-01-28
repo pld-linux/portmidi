@@ -5,7 +5,7 @@ Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
 Version:	217
-Release:	3
+Release:	4
 License:	MIT-like
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
@@ -67,13 +67,14 @@ Narzędzia do konfiguracji i używania portmidi.
 # Add shebang, lib and class path
 %{__sed} -i -e 's|^java|#!/bin/sh\njava \\\
 	-Djava.library.path=%{_libdir}/%{name}/|' \
-	-e 's|/usr/share/java/|%{_libdir}/%{name}/|' \
+	-e 's|%{_javadir}/|%{_libdir}/%{name}/|' \
 	pm_java/pmdefaults/pmdefaults
 
 %build
 export JAVA_HOME=%{java_home}
 %cmake \
-	-DCMAKE_CACHEFILE_DIR=%{_builddir}/%{name}/build
+	-DCMAKE_CACHEFILE_DIR=%{_builddir}/%{name}/build \
+	-DVERSION=%{version}
 
 %{__make} -j 1
 
@@ -108,6 +109,9 @@ cp -a pm_java/pmdefaults/pmdefaults-icon.png \
 # desktop file
 desktop-file-install --dir=$RPM_BUILD_ROOT%{_desktopdir} %{SOURCE1}
 
+# remove duplicate library
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libportmidi_s.so
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -117,13 +121,12 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc CHANGELOG.txt README.txt license.txt pm_linux/README_LINUX.txt
-%attr(755,root,root) %ghost %{_libdir}/libportmidi.so.0*
-%{_libdir}/libportmidi.so.0.
+%attr(755,root,root) %{_libdir}/libportmidi.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libportmidi.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libportmidi.so
-%attr(755,root,root) %{_libdir}/libportmidi_s.so
 %{_includedir}/portmidi.h
 %{_includedir}/porttime.h
 
