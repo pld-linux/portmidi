@@ -73,6 +73,7 @@ Narzędzia do konfiguracji i używania portmidi.
 %build
 export JAVA_HOME=%{java_home}
 %cmake \
+	-DCMAKE_CXX_COMPILER_WORKS=1 -DCMAKE_CXX_COMPILER="%{__cc}" \
 	-DCMAKE_CACHEFILE_DIR=%{_builddir}/%{name}/build \
 	-DVERSION=%{version}
 
