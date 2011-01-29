@@ -14,8 +14,7 @@ Source1:	pmdefaults.desktop
 Patch0:		%{name}-cmake.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
-BuildRequires:	cmake
-BuildRequires:	desktop-file-utils
+BuildRequires:	cmake >= 2.6
 #BuildRequires:	doxygen
 BuildRequires:	jdk >= 1.5
 BuildRequires:	jpackage-utils
@@ -39,6 +38,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki PortMidi
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	alsa-lib-devel >= 0.9
+Obsoletes:	portmidi-static
 
 %description devel
 Header files for PortMidi library.
@@ -51,7 +51,7 @@ Summary:	Tools to configure and use portmidi
 Summary(pl.UTF-8):	Narzędzia do konfiguracji i używania portmidi
 Group:		Applications/Multimedia
 Requires:	%{name} = %{version}-%{release}
-Requires:	jdk >= 1.5
+Requires:	jre >= 1.5
 Requires:	jpackage-utils
 
 %description tools
@@ -83,8 +83,7 @@ export JAVA_HOME=%{java_home}
 %if 0
 # Build the doxygen documentation
 doxygen
-cd latex
-%{__make}
+%{__make} -C latex
 %endif
 
 %install
@@ -105,10 +104,10 @@ mv $RPM_BUILD_ROOT%{_javadir}/pmdefaults.jar $RPM_BUILD_ROOT%{_libdir}/%{name}
 
 # pmdefaults icon
 cp -a pm_java/pmdefaults/pmdefaults-icon.png \
-   $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
+	$RPM_BUILD_ROOT%{_datadir}/icons/hicolor/128x128/apps
 
 # desktop file
-desktop-file-install --dir=$RPM_BUILD_ROOT%{_desktopdir} %{SOURCE1}
+install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 
 # remove duplicate library
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libportmidi_s.so
