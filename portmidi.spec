@@ -12,6 +12,7 @@ Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{ver
 # Source0-md5:	03f46fd3947e2ef4c8c465baaf832241
 Source1:	pmdefaults.desktop
 Patch0:		%{name}-cmake.patch
+Patch1:		%{name}-format.patch
 URL:		http://portmedia.sourceforge.net/
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	cmake >= 2.6
@@ -63,6 +64,7 @@ Narzędzia do konfiguracji i używania portmidi.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
+%patch1 -p1
 
 # Add shebang, lib and class path
 %{__sed} -i -e 's|^java|#!/bin/sh\njava \\\
@@ -95,7 +97,7 @@ install -d $RPM_BUILD_ROOT{%{_libdir}/%{name},%{_datadir}/icons/hicolor/128x128/
 
 # Install the test applications
 for app in latency midiclock midithread midithru mm qtest sysex test; do
-	install build/Release/$app $RPM_BUILD_ROOT%{_libdir}/%{name}
+	install build/PLD/$app $RPM_BUILD_ROOT%{_libdir}/%{name}
 done
 
 # PLD's jni library location is different
