@@ -5,7 +5,7 @@ Summary:	Portable Real-Time MIDI library
 Summary(pl.UTF-8):	Przenośna biblioteka MIDI czasu rzeczywistego
 Name:		portmidi
 Version:	217
-Release:	4
+Release:	5
 License:	MIT-like
 Group:		Libraries
 Source0:	http://downloads.sourceforge.net/portmedia/%{version}/%{name}-src-%{version}.zip
@@ -77,6 +77,8 @@ export JAVA_HOME=%{java_home}
 %cmake \
 	-DCMAKE_CXX_COMPILER_WORKS=1 -DCMAKE_CXX_COMPILER="%{__cc}" \
 	-DCMAKE_CACHEFILE_DIR=%{_builddir}/%{name}/build \
+	-DLIB_INSTALL_DIR=%{_libdir} \
+	-DINCLUDE_INSTALL_DIR=%{_includedir} \
 	-DVERSION=%{version}
 
 %{__make} -j 1
